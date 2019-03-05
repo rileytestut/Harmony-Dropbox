@@ -1,0 +1,3 @@
+[submodule "SwiftyDropbox"]
+	path = SwiftyDropbox
+	url = https://github.com/dropbox/SwiftyDropbox.git

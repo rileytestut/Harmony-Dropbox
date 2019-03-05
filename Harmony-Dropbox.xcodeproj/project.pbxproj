@@ -10,10 +10,92 @@
 		BFDE2C41222DEBC9008038E0 /* Harmony_Dropbox.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDE2C3F222DEBC9008038E0 /* Harmony_Dropbox.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		BFDE2CA0222DF315008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2C9B222DF315008038E0 /* SwiftyDropbox.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F2C6FCC51D89E16800E0DD9E;
+			remoteInfo = "SwiftyDropbox iOS";
+		};
+		BFDE2CA2222DF315008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2C9B222DF315008038E0 /* SwiftyDropbox.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F2C6FCD51D89E1A900E0DD9E;
+			remoteInfo = "SwiftyDropbox macOS";
+		};
+		BFDE2CAF222DF31C008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F8111E3319A95C8B0040E7D1;
+			remoteInfo = "Alamofire iOS";
+		};
+		BFDE2CB1222DF31C008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F8111E3E19A95C8B0040E7D1;
+			remoteInfo = "Alamofire iOS Tests";
+		};
+		BFDE2CB3222DF31C008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4DD67C0B1A5C55C900ED2280;
+			remoteInfo = "Alamofire macOS";
+		};
+		BFDE2CB5222DF31C008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F829C6B21A7A94F100A2CD59;
+			remoteInfo = "Alamofire macOS Tests";
+		};
+		BFDE2CB7222DF31C008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4CF626EF1BA7CB3E0011A099;
+			remoteInfo = "Alamofire tvOS";
+		};
+		BFDE2CB9222DF31C008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4CF626F81BA7CB3E0011A099;
+			remoteInfo = "Alamofire tvOS Tests";
+		};
+		BFDE2CBB222DF31C008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E4202FE01B667AA100C997FB;
+			remoteInfo = "Alamofire watchOS";
+		};
+		BFDE2CD5222DF38B008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F8111E3219A95C8B0040E7D1;
+			remoteInfo = "Alamofire iOS";
+		};
+		BFDE2CD7222DF38E008038E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDE2C9B222DF315008038E0 /* SwiftyDropbox.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F2C6FCC41D89E16800E0DD9E;
+			remoteInfo = "SwiftyDropbox iOS";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		BFDE2C3C222DEBC9008038E0 /* Harmony_Dropbox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Harmony_Dropbox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFDE2C3F222DEBC9008038E0 /* Harmony_Dropbox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Harmony_Dropbox.h; sourceTree = "<group>"; };
 		BFDE2C40222DEBC9008038E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BFDE2C9B222DF315008038E0 /* SwiftyDropbox.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftyDropbox.xcodeproj; path = Carthage/Checkouts/SwiftyDropbox/Source/SwiftyDropbox/SwiftyDropbox.xcodeproj; sourceTree = "<group>"; };
+		BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Carthage/Checkouts/Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				BFDE2C3E222DEBC9008038E0 /* Harmony-Dropbox */,
+				BFDE2C91222DF2DD008038E0 /* Dependencies */,
 				BFDE2C3D222DEBC9008038E0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +133,38 @@
 				BFDE2C40222DEBC9008038E0 /* Info.plist */,
 			);
 			path = "Harmony-Dropbox";
+			sourceTree = "<group>";
+		};
+		BFDE2C91222DF2DD008038E0 /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */,
+				BFDE2C9B222DF315008038E0 /* SwiftyDropbox.xcodeproj */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		BFDE2C9C222DF315008038E0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BFDE2CA1222DF315008038E0 /* SwiftyDropbox.framework */,
+				BFDE2CA3222DF315008038E0 /* SwiftyDropbox.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BFDE2CA5222DF31B008038E0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BFDE2CB0222DF31C008038E0 /* Alamofire.framework */,
+				BFDE2CB2222DF31C008038E0 /* Alamofire iOS Tests.xctest */,
+				BFDE2CB4222DF31C008038E0 /* Alamofire.framework */,
+				BFDE2CB6222DF31C008038E0 /* Alamofire macOS Tests.xctest */,
+				BFDE2CB8222DF31C008038E0 /* Alamofire.framework */,
+				BFDE2CBA222DF31C008038E0 /* Alamofire tvOS Tests.xctest */,
+				BFDE2CBC222DF31C008038E0 /* Alamofire.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,6 +193,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				BFDE2CD8222DF38E008038E0 /* PBXTargetDependency */,
+				BFDE2CD6222DF38B008038E0 /* PBXTargetDependency */,
 			);
 			name = "Harmony-Dropbox";
 			productName = "Harmony-Dropbox";
@@ -109,12 +226,88 @@
 			mainGroup = BFDE2C32222DEBC9008038E0;
 			productRefGroup = BFDE2C3D222DEBC9008038E0 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BFDE2CA5222DF31B008038E0 /* Products */;
+					ProjectRef = BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */;
+				},
+				{
+					ProductGroup = BFDE2C9C222DF315008038E0 /* Products */;
+					ProjectRef = BFDE2C9B222DF315008038E0 /* SwiftyDropbox.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				BFDE2C3B222DEBC9008038E0 /* Harmony-Dropbox */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BFDE2CA1222DF315008038E0 /* SwiftyDropbox.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftyDropbox.framework;
+			remoteRef = BFDE2CA0222DF315008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFDE2CA3222DF315008038E0 /* SwiftyDropbox.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftyDropbox.framework;
+			remoteRef = BFDE2CA2222DF315008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFDE2CB0222DF31C008038E0 /* Alamofire.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Alamofire.framework;
+			remoteRef = BFDE2CAF222DF31C008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFDE2CB2222DF31C008038E0 /* Alamofire iOS Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Alamofire iOS Tests.xctest";
+			remoteRef = BFDE2CB1222DF31C008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFDE2CB4222DF31C008038E0 /* Alamofire.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Alamofire.framework;
+			remoteRef = BFDE2CB3222DF31C008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFDE2CB6222DF31C008038E0 /* Alamofire macOS Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Alamofire macOS Tests.xctest";
+			remoteRef = BFDE2CB5222DF31C008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFDE2CB8222DF31C008038E0 /* Alamofire.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Alamofire.framework;
+			remoteRef = BFDE2CB7222DF31C008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFDE2CBA222DF31C008038E0 /* Alamofire tvOS Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Alamofire tvOS Tests.xctest";
+			remoteRef = BFDE2CB9222DF31C008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BFDE2CBC222DF31C008038E0 /* Alamofire.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Alamofire.framework;
+			remoteRef = BFDE2CBB222DF31C008038E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		BFDE2C3A222DEBC9008038E0 /* Resources */ = {
@@ -135,6 +328,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BFDE2CD6222DF38B008038E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Alamofire iOS";
+			targetProxy = BFDE2CD5222DF38B008038E0 /* PBXContainerItemProxy */;
+		};
+		BFDE2CD8222DF38E008038E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SwiftyDropbox iOS";
+			targetProxy = BFDE2CD7222DF38E008038E0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		BFDE2C42222DEBC9008038E0 /* Debug */ = {

@@ -1,0 +1,17 @@
+## macOS
+.DS_Store
+.arcconfig
+
+## Xcode
+xcuserdata/
+build/
+
+## CocoaPods
+Pods/
+
+## Carthage
+Carthage/
+
+## Swift Package Manager
+Packages/
+.build/
