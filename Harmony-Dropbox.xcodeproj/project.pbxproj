@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BFDE2C41222DEBC9008038E0 /* Harmony_Dropbox.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDE2C3F222DEBC9008038E0 /* Harmony_Dropbox.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BFDE2CDA222DF3E3008038E0 /* DropboxService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE2CD9222DF3E3008038E0 /* DropboxService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,7 @@
 		BFDE2C40222DEBC9008038E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFDE2C9B222DF315008038E0 /* SwiftyDropbox.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftyDropbox.xcodeproj; path = Carthage/Checkouts/SwiftyDropbox/Source/SwiftyDropbox/SwiftyDropbox.xcodeproj; sourceTree = "<group>"; };
 		BFDE2CA4222DF31B008038E0 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Carthage/Checkouts/Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
+		BFDE2CD9222DF3E3008038E0 /* DropboxService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropboxService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				BFDE2C3F222DEBC9008038E0 /* Harmony_Dropbox.h */,
+				BFDE2CD9222DF3E3008038E0 /* DropboxService.swift */,
 				BFDE2C40222DEBC9008038E0 /* Info.plist */,
 			);
 			path = "Harmony-Dropbox";
@@ -213,6 +216,7 @@
 				TargetAttributes = {
 					BFDE2C3B222DEBC9008038E0 = {
 						CreatedOnToolsVersion = 10.2;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -324,6 +328,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFDE2CDA222DF3E3008038E0 /* DropboxService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,6 +473,7 @@
 		BFDE2C45222DEBC9008038E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -485,6 +491,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.rileytestut.Harmony-Dropbox";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -493,6 +500,7 @@
 		BFDE2C46222DEBC9008038E0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
