@@ -150,21 +150,6 @@ public extension DropboxService
 
 extension DropboxService
 {
-    public func upload(_ file: File, for record: AnyRecord, metadata: [HarmonyMetadataKey : Any], context: NSManagedObjectContext, completionHandler: @escaping (Result<RemoteFile, FileError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
-    public func download(_ remoteFile: RemoteFile, completionHandler: @escaping (Result<File, FileError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
-    public func delete(_ remoteFile: RemoteFile, completionHandler: @escaping (Result<Void, FileError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
     public func fetchVersions(for record: AnyRecord, completionHandler: @escaping (Result<[Version], RecordError>) -> Void) -> Progress
     {
         fatalError()
