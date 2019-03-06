@@ -150,31 +150,6 @@ public extension DropboxService
 
 extension DropboxService
 {
-    public func fetchAllRemoteRecords(context: NSManagedObjectContext, completionHandler: @escaping (Result<(Set<RemoteRecord>, Data), FetchError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
-    public func fetchChangedRemoteRecords(changeToken: Data, context: NSManagedObjectContext, completionHandler: @escaping (Result<(Set<RemoteRecord>, Set<String>, Data), FetchError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
-    public func upload(_ record: AnyRecord, metadata: [HarmonyMetadataKey : Any], context: NSManagedObjectContext, completionHandler: @escaping (Result<RemoteRecord, RecordError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
-    public func download(_ record: AnyRecord, version: Version, context: NSManagedObjectContext, completionHandler: @escaping (Result<LocalRecord, RecordError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
-    public func delete(_ record: AnyRecord, completionHandler: @escaping (Result<Void, RecordError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
     public func upload(_ file: File, for record: AnyRecord, metadata: [HarmonyMetadataKey : Any], context: NSManagedObjectContext, completionHandler: @escaping (Result<RemoteFile, FileError>) -> Void) -> Progress
     {
         fatalError()
@@ -186,11 +161,6 @@ extension DropboxService
     }
     
     public func delete(_ remoteFile: RemoteFile, completionHandler: @escaping (Result<Void, FileError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-    
-    public func updateMetadata(_ metadata: [HarmonyMetadataKey : Any], for record: AnyRecord, completionHandler: @escaping (Result<Void, RecordError>) -> Void) -> Progress
     {
         fatalError()
     }
