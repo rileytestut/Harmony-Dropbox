@@ -148,14 +148,6 @@ public extension DropboxService
     }
 }
 
-extension DropboxService
-{
-    public func fetchVersions(for record: AnyRecord, completionHandler: @escaping (Result<[Version], RecordError>) -> Void) -> Progress
-    {
-        fatalError()
-    }
-}
-
 private extension DropboxService
 {
     func finishAuthentication()

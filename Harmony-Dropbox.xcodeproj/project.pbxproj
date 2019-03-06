@@ -14,6 +14,8 @@
 		BFDE2CE1222E35F4008038E0 /* DropboxService+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE2CE0222E35F4008038E0 /* DropboxService+Files.swift */; };
 		BFDE2CE3222E3743008038E0 /* RemoteFile+Dropbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE2CE2222E3743008038E0 /* RemoteFile+Dropbox.swift */; };
 		BFDE2CE5222E3756008038E0 /* PropertyGroup+Harmony.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE2CE4222E3756008038E0 /* PropertyGroup+Harmony.swift */; };
+		BFDE2CE7222E3CFB008038E0 /* DropboxService+Versions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE2CE6222E3CFB008038E0 /* DropboxService+Versions.swift */; };
+		BFDE2CE9222E3D13008038E0 /* Version+Dropbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDE2CE8222E3D13008038E0 /* Version+Dropbox.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +110,8 @@
 		BFDE2CE0222E35F4008038E0 /* DropboxService+Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DropboxService+Files.swift"; sourceTree = "<group>"; };
 		BFDE2CE2222E3743008038E0 /* RemoteFile+Dropbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemoteFile+Dropbox.swift"; sourceTree = "<group>"; };
 		BFDE2CE4222E3756008038E0 /* PropertyGroup+Harmony.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PropertyGroup+Harmony.swift"; sourceTree = "<group>"; };
+		BFDE2CE6222E3CFB008038E0 /* DropboxService+Versions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DropboxService+Versions.swift"; sourceTree = "<group>"; };
+		BFDE2CE8222E3D13008038E0 /* Version+Dropbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Version+Dropbox.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +149,7 @@
 				BFDE2CD9222DF3E3008038E0 /* DropboxService.swift */,
 				BFDE2CDB222E050C008038E0 /* DropboxService+Records.swift */,
 				BFDE2CE0222E35F4008038E0 /* DropboxService+Files.swift */,
+				BFDE2CE6222E3CFB008038E0 /* DropboxService+Versions.swift */,
 				BFDE2CDD222E07B4008038E0 /* Extensions */,
 				BFDE2C40222DEBC9008038E0 /* Info.plist */,
 			);
@@ -188,6 +193,7 @@
 			children = (
 				BFDE2CDE222E07CF008038E0 /* RemoteRecord+Dropbox.swift */,
 				BFDE2CE2222E3743008038E0 /* RemoteFile+Dropbox.swift */,
+				BFDE2CE8222E3D13008038E0 /* Version+Dropbox.swift */,
 				BFDE2CE4222E3756008038E0 /* PropertyGroup+Harmony.swift */,
 			);
 			path = Extensions;
@@ -353,10 +359,12 @@
 			files = (
 				BFDE2CE3222E3743008038E0 /* RemoteFile+Dropbox.swift in Sources */,
 				BFDE2CDA222DF3E3008038E0 /* DropboxService.swift in Sources */,
+				BFDE2CE7222E3CFB008038E0 /* DropboxService+Versions.swift in Sources */,
 				BFDE2CDF222E07D0008038E0 /* RemoteRecord+Dropbox.swift in Sources */,
 				BFDE2CE5222E3756008038E0 /* PropertyGroup+Harmony.swift in Sources */,
 				BFDE2CE1222E35F4008038E0 /* DropboxService+Files.swift in Sources */,
 				BFDE2CDC222E050C008038E0 /* DropboxService+Records.swift in Sources */,
+				BFDE2CE9222E3D13008038E0 /* Version+Dropbox.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
