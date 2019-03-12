@@ -37,7 +37,7 @@ public extension DropboxService
         
         do
         {
-            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             let path = try self.remotePath(filename: nil)
             
             var templateIDs = [String]()
@@ -68,9 +68,7 @@ public extension DropboxService
                     context.perform {
                         do
                         {
-                            guard let result = result else {
-                                throw NetworkError.connectionFailed(CallError(error!))
-                            }
+                            let result = try self.process(Result(result, error))
                             
                             let remoteRecords = result.entries.lazy.compactMap { $0 as? Files.FileMetadata }.compactMap { RemoteRecord(file: $0, metadata: nil, status: updatedStatus, context: context) }
                             updatedRecords.formUnion(remoteRecords)
@@ -85,7 +83,7 @@ public extension DropboxService
                             else
                             {
                                 guard let changeToken = result.cursor.data(using: .utf8) else {
-                                    throw NetworkError.invalidResponse
+                                    throw ServiceError.invalidResponse
                                 }
                                 
                                 completionHandler(.success((updatedRecords, deletedRecordIDs, changeToken)))
@@ -135,7 +133,7 @@ public extension DropboxService
             {
                 let templateID = try result.get()
                 
-                guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+                guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
 
                 try record.perform { (managedRecord) -> Void in
                     guard let localRecord = managedRecord.localRecord else { throw ValidationError.nilLocalRecord }
@@ -165,12 +163,10 @@ public extension DropboxService
                                 
                                 do
                                 {
-                                    guard error == nil else {
-                                        throw NetworkError.connectionFailed(CallError(error!))
-                                    }
+                                    let file = try self.process(Result(file, error))
                                     
-                                    guard let file = file, let remoteRecord = RemoteRecord(file: file, metadata: metadata, status: .normal, context: context) else {
-                                        throw NetworkError.invalidResponse
+                                    guard let remoteRecord = RemoteRecord(file: file, metadata: metadata, status: .normal, context: context) else {
+                                        throw ServiceError.invalidResponse
                                     }
                                     
                                     completionHandler(.success(remoteRecord))
@@ -199,7 +195,7 @@ public extension DropboxService
         
         do
         {
-            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             
             try record.perform { (managedRecord) -> Void in
                 guard let remoteRecord = managedRecord.remoteRecord else { throw ValidationError.nilRemoteRecord }
@@ -210,19 +206,7 @@ public extension DropboxService
                         
                         do
                         {
-                            if let error = error
-                            {
-                                if case .routeError(let routeError, _, _, _) = error, case .path(.notFound) = routeError.unboxed
-                                {
-                                    throw RecordError.doesNotExist(record)
-                                }
-                                else
-                                {
-                                    throw NetworkError.connectionFailed(CallError(error))
-                                }
-                            }
-                            
-                            guard let (_, data) = result else { throw NetworkError.invalidResponse }
+                            let (_, data) = try self.process(Result(result, error))
                             
                             let decoder = JSONDecoder()
                             decoder.managedObjectContext = context
@@ -254,7 +238,7 @@ public extension DropboxService
         
         do
         {
-            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             
             try record.perform { (managedRecord) -> Void in
                 guard let remoteRecord = managedRecord.remoteRecord else { throw ValidationError.nilRemoteRecord }
@@ -264,17 +248,7 @@ public extension DropboxService
                     
                     do
                     {
-                        if let error = error
-                        {
-                            if case .routeError(let routeError, _, _, _) = error, case .pathLookup(.notFound) = routeError.unboxed
-                            {
-                                throw RecordError.doesNotExist(record)
-                            }
-                            else
-                            {
-                                throw NetworkError.connectionFailed(CallError(error))
-                            }
-                        }
+                        try self.process(Result(error))
                         
                         completionHandler(.success)
                     }
@@ -303,7 +277,7 @@ public extension DropboxService
             {
                 let templateID = try result.get()
                 
-                guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+                guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
                 
                 try record.perform { (managedRecord) -> Void in
                     guard let remoteRecord = managedRecord.remoteRecord else { throw ValidationError.nilRemoteRecord }
@@ -317,17 +291,7 @@ public extension DropboxService
                         
                         do
                         {
-                            if let error = error
-                            {
-                                if case .routeError(let routeError, _, _, _) = error, case .path(.notFound) = routeError.unboxed
-                                {
-                                    throw RecordError.doesNotExist(record)
-                                }
-                                else
-                                {
-                                     throw NetworkError.connectionFailed(CallError(error))
-                                }
-                            }
+                            try self.process(Result(error))
                             
                             completionHandler(.success)
                         }

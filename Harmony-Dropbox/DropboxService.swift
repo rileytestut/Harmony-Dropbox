@@ -39,17 +39,26 @@ extension DropboxService
         }
     }
     
-    internal struct CallError<T>: LocalizedError
+    internal enum CallError<T>: LocalizedError
     {
-        var callError: SwiftyDropbox.CallError<T>
+        case error(SwiftyDropbox.CallError<T>)
         
         var errorDescription: String? {
-            return self.callError.description
+            switch self
+            {
+            case .error(let error): return error.description
+            }
         }
         
         init(_ callError: SwiftyDropbox.CallError<T>)
         {
-            self.callError = callError
+            self = .error(callError)
+        }
+        
+        init?(_ callError: SwiftyDropbox.CallError<T>?)
+        {
+            guard let callError = callError else { return nil }
+            self = .error(callError)
         }
     }
 }
@@ -154,15 +163,21 @@ private extension DropboxService
     {
         func finish(_ result: Result<Account, AuthenticationError>)
         {
-            self.authorizationCompletionHandlers.forEach { $0(result) }
+            // Reset self.authorizationCompletionHandlers _before_ calling all the completion handlers.
+            // This stops us from accidentally calling completion handlers twice in some instances.
+            let completionHandlers = self.authorizationCompletionHandlers
             self.authorizationCompletionHandlers.removeAll()
+            
+            completionHandlers.forEach { $0(result) }
         }
         
-        guard let dropboxClient = DropboxClientsManager.authorizedClient else { return finish(.failure(.noSavedCredentials)) }
+        guard let dropboxClient = DropboxClientsManager.authorizedClient else { return finish(.failure(.notAuthenticated)) }
         
         dropboxClient.users.getCurrentAccount().response { (account, error) in
-            if let account = account
+            do
             {
+                let account = try self.process(Result(account, error))
+                
                 self.createSyncDirectoryIfNeeded() { (result) in
                     switch result
                     {
@@ -182,20 +197,18 @@ private extension DropboxService
                                 finish(.success(account))
                                 
                             case .failure(let error):
-                                finish(.failure(.other(error)))
+                                finish(.failure(AuthenticationError(error)))
                             }
                         }
                         
                     case .failure(let error):
-                        finish(.failure(.other(error)))
+                        finish(.failure(AuthenticationError(error)))
                     }
                 }
             }
-            
-            if let error = error
+            catch
             {
-                let error = CallError(error)
-                finish(.failure(.other(error)))
+                finish(.failure(AuthenticationError(error)))
             }
         }
     }
@@ -204,7 +217,7 @@ private extension DropboxService
     {
         do
         {
-            guard let dropboxClient = DropboxClientsManager.authorizedClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = DropboxClientsManager.authorizedClient else { throw AuthenticationError.notAuthenticated }
             
             let path = try self.remotePath(filename: nil)
             dropboxClient.files.getMetadata(path: path).response(queue: self.responseQueue) { (metadata, error) in
@@ -216,10 +229,7 @@ private extension DropboxService
                     dropboxClient.files.createFolderV2(path: path).response(queue: self.responseQueue) { (result, error) in
                         do
                         {
-                            if let error = error
-                            {
-                                throw NetworkError.connectionFailed(CallError(error))
-                            }
+                            try self.process(Result(error))
                             
                             completionHandler(.success)
                         }
@@ -244,13 +254,88 @@ private extension DropboxService
 
 extension DropboxService
 {
+    func process<T, E>(_ result: Result<T, CallError<E>>) throws -> T
+    {
+        do
+        {
+            do
+            {
+                let value = try result.get()
+                return value
+            }
+            catch let error
+            {
+                do
+                {
+                    throw error
+                }
+                catch CallError<E>.error(.authError(let authError, _, _, _))
+                {
+                    switch authError
+                    {
+                    case .invalidAccessToken: throw AuthenticationError.notAuthenticated
+                    case .expiredAccessToken: throw AuthenticationError.tokenExpired
+                    default: break
+                    }
+                }
+                catch CallError<E>.error(.rateLimitError)
+                {
+                    throw ServiceError.rateLimitExceeded
+                }
+                catch CallError<E>.error(.routeError(let boxedError, _, _, _))
+                {
+                    switch boxedError.unboxed
+                    {
+                    case let error as Files.DownloadError:
+                        if case .path(.notFound) = error
+                        {
+                            throw ServiceError.itemDoesNotExist
+                        }
+                        
+                    case let error as Files.GetMetadataError:
+                        if case .path(.notFound) = error
+                        {
+                            throw ServiceError.itemDoesNotExist
+                        }
+                        
+                    case let error as Files.DeleteError:
+                        if case .pathLookup(.notFound) = error
+                        {
+                            throw ServiceError.itemDoesNotExist
+                        }
+                        
+                    case let error as Files.ListRevisionsError:
+                        if case .path(.notFound) = error
+                        {
+                            throw ServiceError.itemDoesNotExist
+                        }
+                        
+                    default: break
+                    }
+                }
+                
+                // If we haven't re-thrown the error as a HarmonyError by now, throw it now.
+                throw ServiceError(error)
+            }
+        }
+        catch let error as HarmonyError
+        {
+            throw error
+        }
+        catch
+        {
+            assertionFailure("Non-HarmonyError thrown from DropboxService.process(_:)")
+            throw error
+        }
+    }
+    
     func validateMetadata<T>(_ metadata: [HarmonyMetadataKey: T], completionHandler: @escaping (Result<String, Error>) -> Void)
     {
         let fields = metadata.keys.map { FileProperties.PropertyFieldTemplate(name: $0.rawValue, description_: $0.rawValue, type: .string_) }
         
         do
         {
-            guard let dropboxClient = DropboxClientsManager.authorizedClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = DropboxClientsManager.authorizedClient else { throw AuthenticationError.notAuthenticated }
             
             if let (templateID, propertyGroupTemplate) = self.propertyGroupTemplate
             {
@@ -262,7 +347,7 @@ extension DropboxService
                 dropboxClient.file_properties.templatesUpdateForUser(templateId: templateID, name: nil, description_: nil, addFields: addedFields).response(queue: self.responseQueue) { (result, error) in
                     do
                     {
-                        guard let result = result else { throw NetworkError.connectionFailed(CallError(error!)) }
+                        let result = try self.process(Result(result, error))
                         
                         let templateID = result.templateId
                         self.fetchPropertyGroupTemplate(forTemplateID: templateID) { (result) in
@@ -284,7 +369,7 @@ extension DropboxService
                 dropboxClient.file_properties.templatesListForUser().response(queue: self.responseQueue) { (result, error) in
                     do
                     {
-                        guard let result = result else { throw NetworkError.connectionFailed(CallError(error!)) }
+                        let result = try self.process(Result(result, error))
                         
                         if let templateID = result.templateIds.first
                         {
@@ -301,7 +386,7 @@ extension DropboxService
                             dropboxClient.file_properties.templatesAddForUser(name: "Harmony", description_: "Harmony syncing metadata.", fields: fields).response(queue: self.responseQueue) { (result, error) in
                                 do
                                 {
-                                    guard let result = result else { throw NetworkError.connectionFailed(CallError(error!)) }
+                                    let result = try self.process(Result(result, error))
                                     
                                     let templateID = result.templateId
                                     self.fetchPropertyGroupTemplate(forTemplateID: templateID) { (result) in
@@ -336,12 +421,12 @@ extension DropboxService
     {
         do
         {
-            guard let dropboxClient = DropboxClientsManager.authorizedClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = DropboxClientsManager.authorizedClient else { throw AuthenticationError.notAuthenticated }
             
             dropboxClient.file_properties.templatesGetForUser(templateId: templateID).response(queue: self.responseQueue) { (result, error) in
                 do
                 {
-                    guard let result = result else { throw NetworkError.connectionFailed(CallError(error!)) }
+                    let result = try self.process(Result(result, error))
                     self.propertyGroupTemplate = (templateID, result)
                     
                     completionHandler(.success(result))

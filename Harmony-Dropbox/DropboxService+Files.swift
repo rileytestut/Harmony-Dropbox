@@ -24,7 +24,7 @@ public extension DropboxService
             {
                 let templateID = try result.get()
                                 
-                guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+                guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
                 
                 let filename = String(describing: record.recordID) + "-" + file.identifier
                 
@@ -37,8 +37,9 @@ public extension DropboxService
                             
                             do
                             {
-                                guard let file = dropboxFile else { throw NetworkError.connectionFailed(CallError(error!)) }
-                                guard let remoteFile = RemoteFile(file: file, metadata: metadata, context: context) else { throw NetworkError.invalidResponse }
+                                let file = try self.process(Result(dropboxFile, error))
+                                
+                                guard let remoteFile = RemoteFile(file: file, metadata: metadata, context: context) else { throw ServiceError.invalidResponse }
                                 
                                 completionHandler(.success(remoteFile))
                             }
@@ -67,7 +68,7 @@ public extension DropboxService
         
         do
         {
-            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             
             let temporaryURL = FileManager.default.uniqueTemporaryURL()
             dropboxClient.files.download(path: remoteFile.remoteIdentifier, rev: remoteFile.versionIdentifier, destination: { (_, _) in temporaryURL }).response(queue: self.responseQueue) { (result, error) in
@@ -75,19 +76,7 @@ public extension DropboxService
                 
                 do
                 {
-                    if let error = error
-                    {
-                        if case .routeError(let routeError, _, _, _) = error, case .path(.notFound) = routeError.unboxed
-                        {
-                            throw FileError.doesNotExist(fileIdentifier)
-                        }
-                        else
-                        {
-                            throw NetworkError.connectionFailed(CallError(error))
-                        }
-                    }
-                    
-                    guard let (_, fileURL) = result else { throw NetworkError.invalidResponse }
+                    let (_, fileURL) = try self.process(Result(result, error))
                     
                     let file = File(identifier: fileIdentifier, fileURL: fileURL)
                     completionHandler(.success(file))
@@ -115,24 +104,14 @@ public extension DropboxService
         
         do
         {
-            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             
             dropboxClient.files.deleteV2(path: remoteFile.remoteIdentifier).response(queue: self.responseQueue) { (result, error) in
                 progress.completedUnitCount += 1
                 
                 do
                 {
-                    if let error = error
-                    {
-                        if case .routeError(let routeError, _, _, _) = error, case .pathLookup(.notFound) = routeError.unboxed
-                        {
-                            throw FileError.doesNotExist(fileIdentifier)
-                        }
-                        else
-                        {
-                            throw NetworkError.connectionFailed(CallError(error))
-                        }
-                    }
+                    try self.process(Result(error))
                     
                     completionHandler(.success)
                 }

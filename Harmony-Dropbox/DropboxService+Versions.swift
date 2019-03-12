@@ -21,7 +21,7 @@ public extension DropboxService
         
         do
         {
-            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.noSavedCredentials }
+            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             
             try record.perform() { (managedRecord) -> Void in
                 guard let remoteRecord = managedRecord.remoteRecord else { throw ValidationError.nilRemoteRecord }
@@ -29,10 +29,8 @@ public extension DropboxService
                 dropboxClient.files.listRevisions(path: remoteRecord.identifier).response(queue: self.responseQueue) { (result, error) in
                     do
                     {
-                        guard let result = result else {
-                            throw NetworkError.connectionFailed(CallError(error!))
-                        }
-                        
+                        let result = try self.process(Result(result, error))
+     
                         let versions = result.entries.compactMap(Version.init(metadata:))
                         completionHandler(.success(versions))
                     }
