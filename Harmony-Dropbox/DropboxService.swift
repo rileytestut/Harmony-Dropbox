@@ -123,7 +123,7 @@ public extension DropboxService
         self.finishAuthentication()
     }
     
-    func deauthenticate(completionHandler: @escaping (Result<Void, AuthenticationError>) -> Void)
+    func deauthenticate(completionHandler: @escaping (Result<Void, DeauthenticationError>) -> Void)
     {
         DropboxClientsManager.unlinkClients()
         
