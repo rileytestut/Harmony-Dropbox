@@ -313,6 +313,10 @@ extension DropboxService
                     default: break
                     }
                 }
+                catch
+                {
+                    // Ignore, just here to prevent propagating to outer do-catch.
+                }
                 
                 // If we haven't re-thrown the error as a HarmonyError by now, throw it now.
                 throw ServiceError(error)
