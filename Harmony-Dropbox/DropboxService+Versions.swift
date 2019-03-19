@@ -26,7 +26,7 @@ public extension DropboxService
             try record.perform() { (managedRecord) -> Void in
                 guard let remoteRecord = managedRecord.remoteRecord else { throw ValidationError.nilRemoteRecord }
                 
-                dropboxClient.files.listRevisions(path: remoteRecord.identifier).response(queue: self.responseQueue) { (result, error) in
+                dropboxClient.files.listRevisions(path: remoteRecord.identifier, limit: 100).response(queue: self.responseQueue) { (result, error) in
                     do
                     {
                         let result = try self.process(Result(result, error))
