@@ -55,11 +55,22 @@ public extension DropboxService
                 {
                     if let cursor = cursor
                     {
-                        dropboxClient.files.listFolderContinue(cursor: cursor).response(queue: self.responseQueue, completionHandler: finish)
+                        let request = dropboxClient.files.listFolderContinue(cursor: cursor).response(queue: self.responseQueue, completionHandler: finish)
+                        
+                        progress.cancellationHandler = {
+                            request.cancel()
+                            completionHandler(.failure(FetchError(GeneralError.cancelled)))
+                        }
                     }
                     else
                     {
-                        dropboxClient.files.listFolder(path: path, includeDeleted: true, includePropertyGroups: .filterSome(templateIDs)).response(queue: self.responseQueue, completionHandler: finish)
+                        let request = dropboxClient.files.listFolder(path: path, includeDeleted: true, includePropertyGroups: .filterSome(templateIDs))
+                            .response(queue: self.responseQueue, completionHandler: finish)
+                        
+                        progress.cancellationHandler = {
+                            request.cancel()
+                            completionHandler(.failure(FetchError(GeneralError.cancelled)))
+                        }
                     }
                 }
                 
@@ -101,7 +112,6 @@ public extension DropboxService
             
             func finish(_ result: Result<(Set<RemoteRecord>, Set<String>, Data), FetchError>)
             {
-                progress.completedUnitCount += 1
                 completionHandler(result)
             }
             
@@ -117,7 +127,6 @@ public extension DropboxService
         }
         catch
         {
-            progress.completedUnitCount += 1
             completionHandler(.failure(FetchError(error)))
         }
         
@@ -156,11 +165,9 @@ public extension DropboxService
                     
                     let propertyGroup = FileProperties.PropertyGroup(templateID: templateID, metadata: metadata)
                     
-                    dropboxClient.files.upload(path: path, mode: mode, autorename: false, mute: true, propertyGroups: [propertyGroup], strictConflict: false, input: data)
+                    let request = dropboxClient.files.upload(path: path, mode: mode, autorename: false, mute: true, propertyGroups: [propertyGroup], strictConflict: false, input: data)
                         .response(queue: self.responseQueue) { (file, error) in
                             context.perform {
-                                progress.completedUnitCount += 1
-                                
                                 do
                                 {
                                     let file = try self.process(Result(file, error))
@@ -177,11 +184,15 @@ public extension DropboxService
                                 }
                             }
                     }
+                    
+                    progress.cancellationHandler = {
+                        request.cancel()
+                        completionHandler(.failure(RecordError(record, GeneralError.cancelled)))
+                    }
                 }
             }
             catch
             {
-                progress.completedUnitCount += 1
                 completionHandler(.failure(RecordError(record, error)))
             }
         }
@@ -200,10 +211,8 @@ public extension DropboxService
             try record.perform { (managedRecord) -> Void in
                 guard let remoteRecord = managedRecord.remoteRecord else { throw ValidationError.nilRemoteRecord }
                 
-                dropboxClient.files.download(path: remoteRecord.identifier, rev: version.identifier).response(queue: self.responseQueue) { (result, error) in
+                let request = dropboxClient.files.download(path: remoteRecord.identifier, rev: version.identifier).response(queue: self.responseQueue) { (result, error) in
                     context.perform {
-                        progress.completedUnitCount += 1
-                        
                         do
                         {
                             let (_, data) = try self.process(Result(result, error))
@@ -221,11 +230,15 @@ public extension DropboxService
                         }
                     }
                 }
+                
+                progress.cancellationHandler = {
+                    request.cancel()
+                    completionHandler(.failure(RecordError(record, GeneralError.cancelled)))
+                }
             }
         }
         catch
         {
-            progress.completedUnitCount += 1
             completionHandler(.failure(RecordError(record, error)))
         }
         
@@ -243,9 +256,7 @@ public extension DropboxService
             try record.perform { (managedRecord) -> Void in
                 guard let remoteRecord = managedRecord.remoteRecord else { throw ValidationError.nilRemoteRecord }
                 
-                dropboxClient.files.deleteV2(path: remoteRecord.identifier).response(queue: self.responseQueue) { (result, error) in
-                    progress.completedUnitCount += 1
-                    
+                let request = dropboxClient.files.deleteV2(path: remoteRecord.identifier).response(queue: self.responseQueue) { (result, error) in
                     do
                     {
                         try self.process(Result(error))
@@ -257,11 +268,15 @@ public extension DropboxService
                         completionHandler(.failure(RecordError(record, error)))
                     }
                 }
+                
+                progress.cancellationHandler = {
+                    request.cancel()
+                    completionHandler(.failure(RecordError(record, GeneralError.cancelled)))
+                }
             }
         }
         catch
         {
-            progress.completedUnitCount += 1
             completionHandler(.failure(RecordError(record, error)))
         }
         
@@ -286,9 +301,7 @@ public extension DropboxService
                     let removedFields = metadata.filter { $0.value is NSNull }.map { $0.key.rawValue }
                     
                     let propertyGroupUpdate = FileProperties.PropertyGroupUpdate(templateId: templateID, addOrUpdateFields: updatedFields, removeFields: removedFields)
-                    dropboxClient.file_properties.propertiesUpdate(path: remoteRecord.identifier, updatePropertyGroups: [propertyGroupUpdate]).response(queue: self.responseQueue) { (_, error) in
-                        progress.completedUnitCount += 1
-                        
+                    let request = dropboxClient.file_properties.propertiesUpdate(path: remoteRecord.identifier, updatePropertyGroups: [propertyGroupUpdate]).response(queue: self.responseQueue) { (_, error) in
                         do
                         {
                             try self.process(Result(error))
@@ -300,11 +313,15 @@ public extension DropboxService
                             completionHandler(.failure(RecordError(record, error)))
                         }
                     }
+                    
+                    progress.cancellationHandler = {
+                        request.cancel()
+                        completionHandler(.failure(RecordError(record, GeneralError.cancelled)))
+                    }
                 }
             }
             catch
             {
-                progress.completedUnitCount += 1
                 completionHandler(.failure(RecordError(record, error)))
             }
         }

@@ -19,6 +19,8 @@ public extension DropboxService
     {
         let progress = Progress.discreteProgress(totalUnitCount: 1)
         
+        var didAddChildProgress = false
+        
         self.validateMetadata(metadata) { (result) in
             do
             {
@@ -30,11 +32,15 @@ public extension DropboxService
                 
                 let path = try self.remotePath(filename: filename)
                 let propertyGroup = FileProperties.PropertyGroup(templateID: templateID, metadata: metadata)
-                dropboxClient.files.upload(path: path, mode: .overwrite, autorename: false, mute: false, propertyGroups: [propertyGroup], strictConflict: false, input: file.fileURL)
+                let request = dropboxClient.files.upload(path: path, mode: .overwrite, autorename: false, mute: false, propertyGroups: [propertyGroup], strictConflict: false, input: file.fileURL)
+                    .progress { (fileProgress) in
+                        guard !didAddChildProgress else { return }
+                        
+                        progress.addChild(fileProgress, withPendingUnitCount: 1)
+                        didAddChildProgress = true
+                    }
                     .response(queue: self.responseQueue) { (dropboxFile, error) in
                         context.perform {
-                            progress.completedUnitCount += 1
-                            
                             do
                             {
                                 let file = try self.process(Result(dropboxFile, error))
@@ -49,10 +55,14 @@ public extension DropboxService
                             }
                         }
                 }
+                
+                progress.cancellationHandler = {
+                    request.cancel()
+                    completionHandler(.failure(FileError(file.identifier, GeneralError.cancelled)))
+                }
             }
             catch
             {
-                progress.completedUnitCount += 1
                 completionHandler(.failure(FileError(file.identifier, error)))
             }
         }
@@ -66,14 +76,21 @@ public extension DropboxService
         
         let fileIdentifier = remoteFile.identifier
         
+        var didAddChildProgress = false
+        
         do
         {
             guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             
             let temporaryURL = FileManager.default.uniqueTemporaryURL()
-            dropboxClient.files.download(path: remoteFile.remoteIdentifier, rev: remoteFile.versionIdentifier, destination: { (_, _) in temporaryURL }).response(queue: self.responseQueue) { (result, error) in
-                progress.completedUnitCount += 1
-                
+            let request = dropboxClient.files.download(path: remoteFile.remoteIdentifier, rev: remoteFile.versionIdentifier, destination: { (_, _) in temporaryURL })
+                .progress { (fileProgress) in
+                    guard !didAddChildProgress else { return }
+                    
+                    progress.addChild(fileProgress, withPendingUnitCount: 1)
+                    didAddChildProgress = true
+                }
+                .response(queue: self.responseQueue) { (result, error) in
                 do
                 {
                     let (_, fileURL) = try self.process(Result(result, error))
@@ -86,10 +103,14 @@ public extension DropboxService
                     completionHandler(.failure(FileError(fileIdentifier, error)))
                 }
             }
+            
+            progress.cancellationHandler = {
+                request.cancel()
+                completionHandler(.failure(FileError(fileIdentifier, GeneralError.cancelled)))
+            }
         }
         catch
         {
-            progress.completedUnitCount += 1
             completionHandler(.failure(FileError(fileIdentifier, error)))
         }
         
@@ -106,9 +127,7 @@ public extension DropboxService
         {
             guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             
-            dropboxClient.files.deleteV2(path: remoteFile.remoteIdentifier).response(queue: self.responseQueue) { (result, error) in
-                progress.completedUnitCount += 1
-                
+            let request = dropboxClient.files.deleteV2(path: remoteFile.remoteIdentifier).response(queue: self.responseQueue) { (result, error) in
                 do
                 {
                     try self.process(Result(error))
@@ -120,10 +139,14 @@ public extension DropboxService
                     completionHandler(.failure(FileError(fileIdentifier, error)))
                 }
             }
+            
+            progress.cancellationHandler = {
+                request.cancel()
+                completionHandler(.failure(FileError(fileIdentifier, GeneralError.cancelled)))
+            }
         }
         catch
         {
-            progress.completedUnitCount += 1
             completionHandler(.failure(FileError(fileIdentifier, error)))
         }
         
