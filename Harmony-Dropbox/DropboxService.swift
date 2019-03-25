@@ -39,16 +39,9 @@ extension DropboxService
         }
     }
     
-    internal enum CallError<T>: LocalizedError
+    internal enum CallError<T>: Error
     {
         case error(SwiftyDropbox.CallError<T>)
-        
-        var errorDescription: String? {
-            switch self
-            {
-            case .error(let error): return error.description
-            }
-        }
         
         init(_ callError: SwiftyDropbox.CallError<T>)
         {
@@ -281,6 +274,10 @@ extension DropboxService
                 catch CallError<E>.error(.rateLimitError)
                 {
                     throw ServiceError.rateLimitExceeded
+                }
+                catch CallError<E>.error(.clientError(let error as URLError))
+                {
+                    throw ServiceError.connectionFailed(error)
                 }
                 catch CallError<E>.error(.routeError(let boxedError, _, _, _))
                 {
