@@ -186,7 +186,7 @@ private extension DropboxService
                                 self.dropboxClient = dropboxClient
                                 self.accountID = account.accountId
                                 
-                                let account = Account(name: account.email)
+                                let account = Account(name: account.name.displayName, emailAddress: account.email)
                                 finish(.success(account))
                                 
                             case .failure(let error):
