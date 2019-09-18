@@ -289,6 +289,11 @@ extension DropboxService
                             throw ServiceError.itemDoesNotExist
                         }
                         
+                        if case .path(.restrictedContent) = error
+                        {
+                            throw ServiceError.restrictedContent
+                        }
+                        
                     case let error as Files.GetMetadataError:
                         if case .path(.notFound) = error
                         {
