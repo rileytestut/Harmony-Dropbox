@@ -73,6 +73,7 @@ public class DropboxService: NSObject, Service
     public var preferredDirectoryName: String?
     
     internal private(set) var dropboxClient: DropboxClient?
+    internal private(set) var tempDropboxClient: DropboxClient? // used to hold ref for one-off network request
     internal let responseQueue = DispatchQueue(label: "com.rileytestut.Harmony.Dropbox.responseQueue")
     
     private var authorizationCompletionHandlers = [(Result<Account, AuthenticationError>) -> Void]()
@@ -105,6 +106,35 @@ public extension DropboxService
         }
     }
     
+    func authenticateManually(withAccessToken accessToken: String, completionHandler: @escaping (Result<Account, AuthenticationError>) -> Void) {
+        
+        self.authorizationCompletionHandlers.append(completionHandler)
+        
+        // set DropboxClient to temp class variable; a local function-scope variable would go out of scope before aync call would be able to finish
+        tempDropboxClient = DropboxClient(accessToken: accessToken)
+        
+        guard let dropboxClient = tempDropboxClient else { return self.finishAuthentication() }
+        
+        // call getCurrentAccount to get accountId to use in creating persistent DropboxAccessToken
+        dropboxClient.users.getCurrentAccount().response { (account, error) in
+            do
+            {
+                let account = try self.process(Result(account, error))
+                
+                // this auth call creates and persists the DropboxAccessToken in SwiftyDropbox's OAuthManager
+                DropboxClientsManager.authorizeWithAccessToken(accessToken, accountId: account.accountId)
+                
+                self.finishAuthentication()
+                self.tempDropboxClient = nil
+            }
+            catch
+            {
+                self.finishAuthentication()
+                self.tempDropboxClient = nil
+            }
+        }
+    }
+    
     func authenticateInBackground(completionHandler: @escaping (Result<Account, AuthenticationError>) -> Void)
     {
         guard let accountID = self.accountID else { return completionHandler(.failure(.noSavedCredentials)) }
@@ -114,6 +144,10 @@ public extension DropboxService
         DropboxClientsManager.reauthorizeClient(accountID)
         
         self.finishAuthentication()
+    }
+    
+    func getAccessToken() -> String? {
+        return DropboxClientsManager.authorizedClient?.auth.client.accessToken
     }
     
     func deauthenticate(completionHandler: @escaping (Result<Void, DeauthenticationError>) -> Void)

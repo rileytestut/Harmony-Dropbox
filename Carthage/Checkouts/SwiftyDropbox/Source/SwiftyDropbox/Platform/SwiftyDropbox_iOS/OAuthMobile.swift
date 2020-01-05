@@ -3,9 +3,13 @@
 ///
 
 import Foundation
+#if os(iOS)
 import SafariServices
+#endif
 import UIKit
+#if os(iOS)
 import WebKit
+#endif
 
 extension DropboxClientsManager {
     public static func authorizeFromController(_ sharedApplication: UIApplication, controller: UIViewController?, openURL: @escaping ((URL) -> Void)) {
@@ -202,8 +206,10 @@ open class MobileSharedApplication: SharedApplication {
 
     open func presentAuthChannel(_ authURL: URL, tryIntercept: @escaping ((URL) -> Bool), cancelHandler: @escaping (() -> Void)) {
         if let controller = self.controller {
+            #if os(iOS)
             let safariViewController = MobileSafariViewController(url: authURL, cancelHandler: cancelHandler)
             controller.present(safariViewController, animated: true, completion: nil)
+            #endif
         }
     }
 
@@ -218,14 +224,17 @@ open class MobileSharedApplication: SharedApplication {
     open func dismissAuthController() {
         if let controller = self.controller {
             if let presentedViewController = controller.presentedViewController {
+                #if os(iOS)
                 if presentedViewController.isBeingDismissed == false && presentedViewController is MobileSafariViewController {
                     controller.dismiss(animated: true, completion: nil)
                 }
+                #endif
             }
         }
     }
 }
 
+#if os(iOS)
 open class MobileSafariViewController: SFSafariViewController, SFSafariViewControllerDelegate {
     var cancelHandler: (() -> Void) = {}
 
@@ -246,4 +255,4 @@ open class MobileSafariViewController: SFSafariViewController, SFSafariViewContr
     }
     
 }
-
+#endif

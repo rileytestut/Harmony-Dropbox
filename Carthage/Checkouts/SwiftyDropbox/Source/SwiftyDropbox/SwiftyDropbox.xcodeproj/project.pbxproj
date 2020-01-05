@@ -402,6 +402,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = F2C6FCBB1D89E16800E0DD9E;
@@ -674,6 +675,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.dropbox.SwiftyDropbox;
 				PRODUCT_NAME = SwiftyDropbox;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos appletvos appletvsimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -695,6 +697,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.dropbox.SwiftyDropbox;
 				PRODUCT_NAME = SwiftyDropbox;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos appletvos appletvsimulator";
 			};
 			name = Release;
 		};

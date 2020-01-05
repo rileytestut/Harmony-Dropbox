@@ -78,6 +78,19 @@ open class DropboxClientsManager {
         }
         Keychain.checkAccessibilityMigrationOneTime
     }
+    
+    public static func authorizeWithAccessToken(_ tokenString: String, accountId: String) {
+        precondition(DropboxOAuthManager.sharedOAuthManager != nil, "Call `DropboxClientsManager.setupWithAppKey` before calling this method")
+        
+        let accessToken = DropboxAccessToken(accessToken: tokenString, uid: accountId)
+        
+        let _ = DropboxOAuthManager.sharedOAuthManager.storeAccessToken(accessToken)
+        
+        if let token = DropboxOAuthManager.sharedOAuthManager.getFirstAccessToken() {
+            setupAuthorizedClient(token, transportClient: nil)
+        }
+        Keychain.checkAccessibilityMigrationOneTime
+    }
 
     static func setupAuthorizedClient(_ accessToken: DropboxAccessToken?, transportClient: DropboxTransportClient?) {
         if let accessToken = accessToken {
