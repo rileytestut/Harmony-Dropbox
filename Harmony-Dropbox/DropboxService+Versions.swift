@@ -33,6 +33,8 @@ public extension DropboxService
      
                         let versions = result.entries.compactMap(Version.init(metadata:))
                         completionHandler(.success(versions))
+                        
+                        progress.completedUnitCount = 1
                     }
                     catch
                     {
@@ -49,6 +51,44 @@ public extension DropboxService
         catch
         {
             completionHandler(.failure(RecordError(record, error)))
+        }
+        
+        return progress
+    }
+    
+    func fetchVersions(for remoteFile: RemoteFile, completionHandler: @escaping (Result<[Version], FileError>) -> Void) -> Progress
+    {
+        let progress = Progress.discreteProgress(totalUnitCount: 1)
+        let fileIdentifier = remoteFile.identifier
+        
+        do
+        {
+            guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
+            
+            let request = dropboxClient.files.listRevisions(path: remoteFile.remoteIdentifier, limit: 100).response(queue: self.responseQueue) { (result, error) in
+                do
+                {
+                    let result = try self.process(Result(result, error))
+ 
+                    let versions = result.entries.compactMap(Version.init(metadata:))
+                    completionHandler(.success(versions))
+                    
+                    progress.completedUnitCount = 1
+                }
+                catch
+                {
+                    completionHandler(.failure(FileError(fileIdentifier, error)))
+                }
+            }
+            
+            progress.cancellationHandler = {
+                request.cancel()
+                completionHandler(.failure(FileError(fileIdentifier, GeneralError.cancelled)))
+            }
+        }
+        catch
+        {
+            completionHandler(.failure(FileError(fileIdentifier, error)))
         }
         
         return progress
