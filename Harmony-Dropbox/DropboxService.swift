@@ -294,6 +294,16 @@ extension DropboxService
                             throw ServiceError.restrictedContent
                         }
                         
+                    case let error as Files.UploadError:
+                        if case .path(let failure) = error
+                        {
+                            switch failure.reason
+                            {
+                            case .insufficientSpace: throw ServiceError.insufficentSpace
+                            default: break
+                            }
+                        }
+                        
                     case let error as Files.GetMetadataError:
                         if case .path(.notFound) = error
                         {
