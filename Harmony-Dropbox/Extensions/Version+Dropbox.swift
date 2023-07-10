@@ -17,6 +17,6 @@ extension Version
 {
     init?(metadata: Files.FileMetadata)
     {        
-        self.init(identifier: metadata.rev, date: metadata.serverModified)
+        self.init(identifier: metadata.rev, date: metadata.clientModified)
     }
 }

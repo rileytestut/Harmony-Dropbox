@@ -165,7 +165,7 @@ public extension DropboxService
                     
                     let propertyGroup = FileProperties.PropertyGroup(templateID: templateID, metadata: metadata)
                     
-                    let request = dropboxClient.files.upload(path: path, mode: mode, autorename: false, mute: true, propertyGroups: [propertyGroup], strictConflict: false, input: data)
+                    let request = dropboxClient.files.upload(path: path, mode: mode, autorename: false, clientModified: localRecord.modificationDate, mute: true, propertyGroups: [propertyGroup], strictConflict: false, input: data)
                         .response(queue: self.responseQueue) { (file, error) in
                             context.perform {
                                 do

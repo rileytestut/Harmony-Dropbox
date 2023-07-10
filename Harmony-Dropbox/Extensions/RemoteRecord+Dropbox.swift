@@ -19,6 +19,6 @@ extension RemoteRecord
     {
         guard let identifier = file.pathLower, let metadata = file.propertyGroups?.first?.metadata ?? metadata?.compactMapValues({ $0 as? String }) else { return nil }
         
-        try? self.init(identifier: identifier, versionIdentifier: file.rev, versionDate: file.serverModified, metadata: metadata, status: status, context: context)
+        try? self.init(identifier: identifier, versionIdentifier: file.rev, versionDate: file.clientModified, metadata: metadata, status: status, context: context)
     }
 }
