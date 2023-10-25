@@ -138,7 +138,7 @@ public extension DropboxService
             self.finishAuthentication()
             
         case .error(let error, let description):
-            print("Error authorizing with Dropbox.", error, description)
+            Logger.sync.error("Failed to authenticate with Dropbox. \(String(describing: error), privacy: .public) \(description, privacy: .public)")
             
             let oAuthError = OAuthError(error: error, description: description)
             self.authorizationCompletionHandlers.forEach { $0(.failure(.other(oAuthError))) }
