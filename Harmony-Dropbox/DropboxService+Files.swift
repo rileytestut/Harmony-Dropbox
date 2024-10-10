@@ -70,7 +70,7 @@ public extension DropboxService
         return progress
     }
     
-    func download(_ remoteFile: RemoteFile, completionHandler: @escaping (Result<File, FileError>) -> Void) -> Progress
+    func download(_ remoteFile: RemoteFile, version: String?, completionHandler: @escaping (Result<File, FileError>) -> Void) -> Progress
     {
         let progress = Progress.discreteProgress(totalUnitCount: 1)
         
@@ -83,7 +83,7 @@ public extension DropboxService
             guard let dropboxClient = self.dropboxClient else { throw AuthenticationError.notAuthenticated }
             
             let temporaryURL = FileManager.default.uniqueTemporaryURL()
-            let request = dropboxClient.files.download(path: remoteFile.remoteIdentifier, rev: remoteFile.versionIdentifier, destination: { (_, _) in temporaryURL })
+            let request = dropboxClient.files.download(path: remoteFile.remoteIdentifier, rev: version, destination: { (_, _) in temporaryURL })
                 .progress { (fileProgress) in
                     guard !didAddChildProgress else { return }
                     
